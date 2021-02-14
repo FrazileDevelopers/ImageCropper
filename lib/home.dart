@@ -8,10 +8,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   static const platform = const MethodChannel('com.fz.imagecropper/image');
+  String name = 'Getting Name...';
 
   @override
   void initState() {
-    PrintName();
+    printName();
     super.initState();
   }
 
@@ -24,18 +25,25 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text('NAME'),
+        child: Text(name),
       ),
     );
   }
 
-  void PrintName() async {
+  void printName() async {
     String value = '';
+
+    var sendMap = <String, dynamic>{
+      "name": "Parth Aggarwal",
+    };
+
     try {
-      value = await platform.invokeMethod("GetName");
-    } catch (e) {
-      print(e);
+      value = await platform.invokeMethod("GetName", sendMap);
+    } on PlatformException catch (e) {
+      print(e.message);
     }
-    print(value);
+    setState(() {
+      name = value;
+    });
   }
 }

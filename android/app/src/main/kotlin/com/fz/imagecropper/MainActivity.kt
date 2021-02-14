@@ -12,14 +12,17 @@ class MainActivity: FlutterActivity() {
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine);
         
-        MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL).setMethodCallHandler{ methodcall, result ->
-            if(methodcall.method == "GetName") {
-                val greetings = helloFromNativeCode()
-                result.success(greetings)
+        MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL).setMethodCallHandler{ call, result ->
+            val arguments = call.arguments<Map<String, Any>>()
+
+            if(call.method == "GetName") {
+                val name = helloFromNativeCode(arguments["name"])
+                result.success(name)
             }
         }
     }
-    private fun helloFromNativeCode(): String {
-    return "Hello from Kotlin"
+    fun helloFromNativeCode(args: Any?): String {
+    val name = args.toString()
+    return name
   }
 }
